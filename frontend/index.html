@@ -1,1 +1,139 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To - do App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
 
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        #taskList {
+            margin: 20px auto;
+            width: 80%;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #taskInput {
+            width: 80%;
+            padding: 10px;
+            margin: 20px auto;
+            display: block;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            margin: 20px auto;
+            display: block;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .task-item:last-child {
+            border-bottom: none;
+        }
+
+        .task-item input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+        .task-item button {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .task-item button:hover {
+            background-color: #e53935;
+        }
+    </style>
+</head>
+<body>
+    <h1>Todo List</h1>
+    <h2>Tasks</h2> 
+    <div id="taskList"></div>
+    <input type="text" id="taskInput" placeholder="Add a new task">
+    <button onclick="addTask()">Add Task</button>
+    <script>
+        const taskList = document.getElementById('taskList');
+        const taskInput = document.getElementById('taskInput');
+        let tasks = []; 
+        function addTask() {
+        const taskName = taskInput.value.trim();
+        if (taskName !== '') {
+            const newTask = {
+            id: Date.now(), 
+            name: taskName,
+            completed: false,
+            };
+            tasks.push(newTask);
+
+            addTaskToDOM(newTask);
+            taskInput.value = '';
+            }
+        }
+        function deleteTask() {
+        if (!confirm("Are you sure you want to delete this task?")) {
+            return;
+        }
+        const taskIdToDelete = parseInt(event.target.parentNode.dataset.taskId); // Assuming task ID is stored in a data-attribute
+        const taskIndex = tasks.findIndex(task => task.id === taskIdToDelete);
+        if (taskIndex !== -1) {
+            tasks.splice(taskIndex, 1);
+            updateTaskList();
+        } 
+        else {
+            console.error("Task not found for deletion");
+            }
+        }
+        function updateTaskList() {
+        taskList.innerHTML = '';
+        tasks.forEach(task => addTaskToDOM(task));
+        }
+        function addTaskToDOM(task) {
+        const taskItem = document.createElement('div');
+        taskItem.dataset.taskId = task.id; 
+        taskItem.innerHTML = `
+            <input type="checkbox" ${task.completed ? 'checked' : ''}>
+            <span style="text-decoration: ${task.completed ? 'line-through' : 'none'}">${task.name}</span>
+            <button onclick="deleteTask()">Delete</button>
+        `;
+        taskList.appendChild(taskItem);
+        }
+        addTask();
+    </script>
+</body>
+</html>
